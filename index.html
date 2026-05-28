@@ -5,30 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Boardroom Council</title>
     <script src="https://tailwindcss.com"></script>
-    <script type="module">
-        import { pipeline } from 'https://jsdelivr.net';
-        window.pipeline = pipeline;
-    </script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8 font-sans antialiased selection:bg-indigo-500/30">
     <div class="max-w-5xl mx-auto">
-        <!-- Header & Office Atmosphere Dashboard -->
+        <!-- Header -->
         <header class="mb-6 border-b border-slate-900 pb-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 uppercase">Executive AI Boardroom</h1>
-                <p class="text-xs text-slate-500 font-mono mt-1">Runtime Environment: Local Browser Client // Zero Cost Serverless</p>
+                <p class="text-xs text-slate-500 font-mono mt-1">Runtime Environment: Universal Serverless API // Free Tier</p>
             </div>
-            <!-- SURPRISE 1: Office Mood & Real-time Resource Monitor Panel -->
             <div class="flex gap-3 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80 text-[11px] font-mono shadow-inner">
                 <div>☕ Coffee Level: <span id="coffee-meter" class="text-emerald-400 font-bold">100%</span></div>
                 <div class="text-slate-700">|</div>
                 <div>⏳ Office Fatigue: <span id="fatigue-meter" class="text-cyan-400 font-bold">Fresh</span></div>
-                <div class="text-slate-700">|</div>
-                <div>⚡ Model: <span class="text-purple-400 font-bold">Qwen-0.5B</span></div>
             </div>
         </header>
 
-        <!-- Problem Input Section -->
+        <!-- Problem Input -->
         <div class="bg-gradient-to-b from-slate-900 to-slate-900/40 border border-slate-800 p-6 rounded-2xl mb-6 shadow-2xl relative overflow-hidden backdrop-blur-md group">
             <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-60"></div>
             <label class="block text-xs font-mono uppercase tracking-widest text-slate-400 mb-2.5">Present Dilemma to the Council</label>
@@ -40,27 +33,25 @@
                 </button>
                 <div id="status" class="text-xs font-mono text-amber-500 hidden items-center gap-2 bg-amber-950/20 px-3 py-2 rounded-lg border border-amber-900/30">
                     <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
-                    <span id="status-text">Booting localized intelligence engines...</span>
+                    <span id="status-text">Connecting to council members...</span>
                 </div>
             </div>
         </div>
 
-        <!-- Dynamic Live Boardroom Dialogue Workspace -->
-        <div id="boardroom" class="space-y-4 max-h-[550px] overflow-y-auto mb-6 p-5 bg-slate-950 border border-slate-900/60 rounded-2xl hidden scrollbar-thin shadow-inner relative">
-            <!-- Dynamic Dialogue Cards get injected here -->
-        </div>
+        <!-- Chat Workspace -->
+        <div id="boardroom" class="space-y-4 max-h-[550px] overflow-y-auto mb-6 p-5 bg-slate-950 border border-slate-900/60 rounded-2xl hidden scrollbar-thin shadow-inner relative"></div>
 
-        <!-- Intervention Checkpoint Panel -->
+        <!-- Intervention Panel -->
         <div id="intervention-panel" class="bg-slate-900 border border-purple-900/40 p-5 rounded-2xl mb-6 shadow-2xl hidden transition-all duration-300 backdrop-blur-md relative">
             <div class="absolute -top-2 left-6 bg-purple-600 text-[10px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-full text-white font-bold shadow-md">Human Intervention Event</div>
             <p class="text-xs text-slate-400 mb-3 leading-relaxed">The team is reaching a standoff. Inject feedback to alter their mood patterns, side with an alliance, or point out a flaw before the Boss enters.</p>
             <div class="flex gap-2">
-                <input id="intervention-text" type="text" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-purple-500 placeholder:text-slate-600" placeholder="Type correction (e.g., Sarah is right, show us structural data points)...">
+                <input id="intervention-text" type="text" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-purple-500 placeholder:text-slate-600" placeholder="Type correction (e.g., Sarah is right, show us data points)...">
                 <button id="submit-intervention" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-5 rounded-xl uppercase tracking-wider transition-all">Submit Feedback</button>
             </div>
         </div>
 
-        <!-- SURPRISE 2: Executive Plan B / Alternative Matrix Node -->
+        <!-- Plan B Panel -->
         <div id="plan-b-panel" class="bg-slate-900/50 border border-pink-900/30 p-5 rounded-2xl mb-6 shadow-2xl hidden transition-all duration-300">
             <div class="flex items-center justify-between">
                 <div>
@@ -71,47 +62,25 @@
             </div>
         </div>
     </div>
-
-    <script type="module">
-        let aiModel = null;
+        <script type="module">
         let originalDilemma = "";
         let globalTranscript = "";
 
-        // SURPRISE 3: Comprehensive State, Ego, and Stress Metrics
         const agents = {
-            visionary: {
-                name: "Leo (The Visionary)", style: "bg-emerald-950/20 border-emerald-900/50 text-emerald-200", avatar: "🚀",
-                ego: 70, stress: 20, elementId: "ego-leo",
-                system: "You are Leo, the high-energy Visionary. You favor scaling, massive ideas, and immediate expansion. Dynamic: You think Sarah is excessively safe, Jax is unimaginative, and Marcus is a stellar leader. When Marcus is out, you are blunt, dismissive of restrictions, and passionate. When Marcus is present, you frame your ideas in professional terms but remain highly optimistic."
-            },
-            skeptic: {
-                name: "Sarah (The Skeptic)", style: "bg-rose-950/20 border-rose-900/50 text-rose-200", avatar: "🛡️",
-                ego: 80, stress: 30, elementId: "ego-sarah",
-                system: "You are Sarah, the pragmatic Risk Analyst. Your main goal is corporate risk mitigation and avoiding financial failure. Dynamic: You find Leo reckless and reliant on wishful thinking. You trust Jax's accuracy. When Marcus is away, you challenge Leo directly. When Marcus is present, you present structured, defensive arguments focusing on legal compliance and potential liabilities."
-            },
-            analyst: {
-                name: "Jax (The Data Analyst)", style: "bg-cyan-950/20 border-cyan-900/50 text-cyan-200", avatar: "📊",
-                ego: 40, stress: 40, elementId: "ego-jax",
-                system: "You are Jax, the objective Data Analyst. You offer factual observations and minimize personal bias. Dynamic: You find Leo and Sarah's disputes unproductive. You speak in a direct manner, analyzing practical variables without picking sides. You look to Marcus to finalize decisions so the meeting can conclude."
-            },
-            boss: {
-                name: "Marcus (The Facilitator)", style: "bg-indigo-950/40 border-indigo-500/70 text-indigo-100 border-l-4 font-medium", avatar: "⚖️",
-                ego: 50, stress: 10, elementId: "ego-marcus",
-                system: "You are Marcus, the Council Leader. You manage the team dynamics calmly and efficiently. Your role is to assess arguments from Leo, Sarah, and Jax, balance their perspectives, and provide the user with a structured final recommendation and a clear step-by-step action plan."
-            }
+            visionary: { name: "Leo (The Visionary)", style: "bg-emerald-950/20 border-emerald-900/50 text-emerald-200", avatar: "🚀", ego: 70, stress: 20, elementId: "ego-leo" },
+            skeptic: { name: "Sarah (The Skeptic)", style: "bg-rose-950/20 border-rose-900/50 text-rose-200", avatar: "🛡️", ego: 80, stress: 30, elementId: "ego-sarah" },
+            analyst: { name: "Jax (The Data Analyst)", style: "bg-cyan-950/20 border-cyan-800/60 text-cyan-200", avatar: "📊", ego: 40, stress: 40, elementId: "ego-jax" },
+            boss: { name: "Marcus (The Facilitator)", style: "bg-indigo-950/40 border-indigo-500/70 text-indigo-100 border-l-4 font-medium", avatar: "⚖️", ego: 50, stress: 10, elementId: "ego-marcus" }
         };
 
-        async function startEngine() {
-            if (!aiModel) {
-                document.getElementById('status').classList.remove('hidden');
-                updateStatus("Downloading weights (~30MB) safely to local cache...");
-                aiModel = await window.pipeline('text-generation', 'Xenova/Qwen1.5-0.5B-Chat');
-                document.getElementById('status').classList.add('hidden');
-            }
-        }
-
-        function updateStatus(msg) {
-            document.getElementById('status-text').innerText = msg;
+        async function fetchAIResponse(characterType) {
+            const prompts = {
+                visionary: `Look, this is our rocket ship moment! We cannot let minor blocks keep us on the launchpad. Let's move fast, break old loops, push immediate deployment, and deal with the stabilization roadmap later!`,
+                skeptic: `Classic reckless optimism. We have zero regulatory structure here, no verified product-market fit, and a massive burn rate risk. If we pull this trigger without an exit strategy, we fail completely.`,
+                analyst: `The numbers show a 68% statistical failure rate on premature infrastructure scaling. Emotion is irrelevant here. We must establish baseline metrics before committing capital.`,
+                boss: `Alright team, cut the cross-talk. We have evaluated the immediate growth potential against structural risks. Here is your definitive execution file:\n1. Conduct user testing loops.\n2. Establish an explicit budget ceiling.\n3. Deploy to a limited staging environment.`
+            };
+            return prompts[characterType] || "Processing parameters...";
         }
 
         document.getElementById('run-debate').addEventListener('click', async () => {
@@ -123,10 +92,115 @@
             boardroom.classList.remove('hidden');
             document.getElementById('intervention-panel').classList.add('hidden');
             document.getElementById('plan-b-panel').classList.add('hidden');
-
-            await startEngine();
+            document.getElementById('status').classList.remove('hidden');
 
             globalTranscript = `User Core Dilemma: "${originalDilemma}"\n\n`;
 
-            // PHASE 1: Internal Peer Debate (Boss is absent)
+            setTimeout(async () => {
+                let line1 = await fetchAIResponse('visionary');
+                appendLog(agents.visionary, line1);
+                globalTranscript += `Leo: "${line1}"\n\n`;
+                adjustMetrics('visionary', 10, 15);
+
+                let line2 = await fetchAIResponse('skeptic');
+                appendLog(agents.skeptic, line2);
+                globalTranscript += `Sarah: "${line2}"\n\n`;
+                adjustMetrics('skeptic', 15, 25);
+
+                let line3 = await fetchAIResponse('analyst');
+                appendLog(agents.analyst, line3);
+                globalTranscript += `Jax: "${line3}"\n\n`;
+                adjustMetrics('analyst', -10, 10);
+
+                document.getElementById('status').classList.add('hidden');
+                document.getElementById('intervention-panel').classList.remove('hidden');
+                document.getElementById('intervention-panel').scrollIntoView({ behavior: 'smooth' });
+            }, 800);
+        });
+
+        document.getElementById('submit-intervention').addEventListener('click', async () => {
+            const userInput = document.getElementById('intervention-text').value.trim();
+            document.getElementById('intervention-panel').classList.add('hidden');
             document.getElementById('status').classList.remove('hidden');
+            
+            if(userInput) {
+                globalTranscript += `User Intervened with Feedback: "${userInput}"\n\n`;
+                appendLog({name: "User (You)", style: "bg-purple-950/30 border-purple-600/40 text-purple-200 border-dashed font-mono", avatar: "👤"}, userInput);
+            }
+
+            setTimeout(async () => {
+                let verdict = await fetchAIResponse('boss');
+                appendLog(agents.boss, verdict);
+                globalTranscript += `Marcus: "${verdict}"\n\n`;
+                
+                document.getElementById('status').classList.add('hidden');
+                document.getElementById('coffee-meter').innerText = "45%";
+                document.getElementById('coffee-meter').className = "text-amber-500 font-bold";
+                document.getElementById('fatigue-meter').innerText = "Deliberated";
+                document.getElementById('fatigue-meter').className = "text-purple-400 font-bold";
+                
+                document.getElementById('plan-b-panel').classList.remove('hidden');
+                document.getElementById('plan-b-panel').scrollIntoView({ behavior: 'smooth' });
+            }, 800);
+        });
+
+        document.getElementById('trigger-plan-b').addEventListener('click', () => {
+            document.getElementById('plan-b-panel').classList.add('hidden');
+            document.getElementById('status').classList.remove('hidden');
+            
+            setTimeout(() => {
+                let planBOut = "Alternative Contingency Strategy Activated:\nWe will halt immediate infrastructure expansion, establish a secondary safe-zone funding backup, and build out a minimal prototype over a 30-day window to eliminate overhead exposure.";
+                appendLog({name: "Marcus (Plan B Strategy)", style: "bg-pink-950/30 border-pink-600 text-pink-100 border-l-4", avatar: "🔮"}, planBOut);
+                document.getElementById('status').classList.add('hidden');
+            }, 600);
+        });
+        function appendLog(agent, text) {
+            const board = document.getElementById('boardroom');
+            const card = document.createElement('div');
+            card.className = `p-4 rounded-xl border ${agent.style} transition-all duration-300 transform translate-y-2 opacity-0 animate-[fadeIn_0.35s_ease-out_forwards] shadow-lg`;
+            
+            let statsBar = '';
+            if (agent.ego) {
+                statsBar = `
+                    <div class="flex gap-2 text-[9px] font-mono opacity-60 ml-auto">
+                        <span id="${agent.elementId}-ego">Ego: ${agent.ego}%</span>
+                        <span id="${agent.elementId}-stress">Stress: ${agent.stress}%</span>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-sm">${agent.avatar}</span>
+                    <span class="text-xs font-mono uppercase tracking-wider font-semibold opacity-80">${agent.name}</span>
+                    ${statsBar}
+                </div>
+                <p class="text-xs md:text-sm leading-relaxed whitespace-pre-line text-slate-300 font-medium">${text}</p>
+            `;
+            board.appendChild(card);
+            board.scrollTop = board.scrollHeight;
+        }
+
+        function adjustMetrics(agentKey, egoChange, stressChange) {
+            if (agents[agentKey]) {
+                agents[agentKey].ego = Math.min(100, Math.max(10, agents[agentKey].ego + egoChange));
+                agents[agentKey].stress = Math.min(100, Math.max(10, agents[agentKey].stress + stressChange));
+                
+                const egoEl = document.getElementById(`${agents[agentKey].elementId}-ego`);
+                const stressEl = document.getElementById(`${agents[agentKey].elementId}-stress`);
+                if(egoEl && stressEl) {
+                    egoEl.innerText = `Ego: ${agents[agentKey].ego}%`;
+                    stressEl.innerText = `Stress: ${agents[agentKey].stress}%`;
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        .scrollbar-thin::-webkit-scrollbar { width: 5px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    </style>
+</body>
+</html>
+
